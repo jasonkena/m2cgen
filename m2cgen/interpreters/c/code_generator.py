@@ -1,4 +1,5 @@
 import contextlib
+import re
 
 from m2cgen.interpreters.code_generator import CLikeCodeGenerator
 from m2cgen.interpreters.code_generator import CodeTemplate as CT
@@ -48,7 +49,9 @@ class CCodeGenerator(CLikeCodeGenerator):
         self.add_assign_array_statement(value, var_name, value_size)
 
     def add_assign_array_statement(self, source_var, target_var, size):
-        self.add_code_line(f"memcpy({target_var}, {source_var}, "
+        new_source_var = re.findall('{.*}', source_var)[0]
+        self.add_code_line(f"double temp_array[] = {new_source_var};")
+        self.add_code_line(f"memcpy({target_var}, temp_array, "
                            f"{size} * sizeof(double));")
 
     def add_dependency(self, dep):
