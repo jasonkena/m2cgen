@@ -26,8 +26,10 @@ class CInterpreter(ImperativeToCodeInterpreter,
     sqrt_function_name = "sqrt"
     tanh_function_name = "tanh"
 
-    def __init__(self, indent=4, function_name="score", *args, **kwargs):
+    def __init__(self, indent=4, function_name="score", api_version="", model_version="", *args, **kwargs):
         self.function_name = function_name
+        self.api_version = api_version
+        self.model_version = model_version
 
         cg = CCodeGenerator(indent=indent)
         super().__init__(cg, *args, **kwargs)
@@ -56,13 +58,18 @@ class CInterpreter(ImperativeToCodeInterpreter,
             else:
                 self._cg.add_return_statement(last_result)
 
+        ver_str = f'extern "C" const char* api_version() {{ return "{self.api_version}"; }}\n'\
+                f'extern "C" const char* model_version() {{ return "{self.model_version}"; }}'
+
+        self._cg.prepend_code_lines(ver_str)
+
         if self.with_linear_algebra:
             filename = os.path.join(
                 os.path.dirname(__file__), "linear_algebra.c")
             self._cg.prepend_code_lines(utils.get_file_content(filename))
 
-        if self.with_vectors:
-            self._cg.add_dependency("<string.h>")
+        # if self.with_vectors:
+        self._cg.add_dependency("<string.h>")
 
         if self.with_math_module:
             self._cg.add_dependency("<math.h>")

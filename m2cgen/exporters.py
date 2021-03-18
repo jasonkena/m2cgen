@@ -57,7 +57,7 @@ def export_to_python(model, indent=4, function_name="score"):
     return _export(model, interpreter)
 
 
-def export_to_c(model, indent=4, function_name="score"):
+def export_to_c(model, indent=4, function_name="score", api_version="", model_version=""):
     """
     Generates a C code representation of the given model.
 
@@ -76,7 +76,9 @@ def export_to_c(model, indent=4, function_name="score"):
     """
     interpreter = interpreters.CInterpreter(
         indent=indent,
-        function_name=function_name
+        function_name=function_name,
+        api_version=api_version,
+        model_version=model_version
     )
     return _export(model, interpreter)
 
