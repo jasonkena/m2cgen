@@ -58,8 +58,8 @@ class CInterpreter(ImperativeToCodeInterpreter,
             else:
                 self._cg.add_return_statement(last_result)
 
-        ver_str = f'extern "C" const char* api_version() {{ return "{self.api_version}"; }}\n'\
-                f'extern "C" const char* model_version() {{ return "{self.model_version}"; }}'
+        ver_str = f'extern "C" unsigned int api_version() noexcept {{ return {self.api_version}; }}\n'\
+                f'extern "C" const char* model_version() noexcept {{ return "{self.model_version}"; }}'
 
         self._cg.prepend_code_lines(ver_str)
 

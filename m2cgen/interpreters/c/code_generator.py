@@ -19,7 +19,7 @@ class CCodeGenerator(CLikeCodeGenerator):
         func_args = ", ".join([
             f"{self._get_var_type(is_vector)} {n}"
             for is_vector, n in args])
-        function_def = f'extern "C" {return_type} {name}({func_args}) {{'
+        function_def = f'extern "C" {return_type} {name}({func_args}) noexcept {{'
         self.add_code_line(function_def)
         self.increase_indent()
 
